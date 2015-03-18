@@ -1,0 +1,391 @@
+/*! Import Google Fonts */
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro|Stint+Ultra+Expanded);
+
+/*! Signup and Login pages */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+	outline: none;
+}
+
+h1, h2, h3 {
+	font-family: 'Stint Ultra Expanded', sans-serif;
+}
+
+h4, h5, p, .nav {
+	font-family: 'Source Sans Pro', sans-serif;
+	line-height: 1.5;
+}
+
+a {
+	color: #76a6ad;
+}
+
+a:hover, a:active {
+	color: #669999;
+}
+
+.logo {
+	text-align: center;
+	margin: 0 0 30px 0;
+	height: auto;
+}
+
+.logo img {
+	width: 60px;
+}
+
+.logo h1 {
+	color: #FFFFFF;
+	text-transform: uppercase;
+	font-size: 50px;
+}
+
+/*! Welcome page */
+.header {
+	padding: 40px 0;
+	background: #76a6ad;
+}
+
+.content {
+	padding: 80px 0;
+}
+
+.content img {
+	width: 100%;
+	height: auto;
+}
+
+.players {
+	padding: 80px 0;
+	background: #f2f2f2;
+}
+
+.logo-white h3 {
+	float: left;
+	margin: 8px 0 0 0;
+	color: #FFFFFF;
+}
+
+.logo-white img {
+	float: left;
+	width: 40px;
+	margin-right: 10px;
+}
+
+.navbar {
+	min-height: 0;
+}
+
+.navbar-inverse {
+	background: transparent;
+	border: none;
+	margin: 0;
+}
+
+.navbar-collapse {
+	padding: 0;
+}
+
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+	border: none;
+	box-shadow: none;
+}
+
+.navbar-nav>li>a {
+	padding: 10px 10px 10px 0;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+	color: #FFFFFF;
+}
+
+.navbar-inverse .navbar-toggle {
+	border: none;
+	padding: 1px;
+	margin: 13px 0;
+}
+
+.header form input[type="text"] {
+	width: 296px;
+	border: none;
+	padding: 10px;
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+.header form input[type="image"]  {
+	width: 40px;
+	margin-left: 10px;
+	float: right;
+}
+
+.players h4 {
+	margin-top: 0;
+}
+
+.content img, .players img {
+	-webkit-border-radius: 200px;
+	-moz-border-radius: 200px;
+	border-radius: 200px;
+}
+
+.players img {
+	border: 8px solid #FFFFFF;
+}
+
+.players .row {
+	margin-bottom: 40px;
+}
+
+.players .row:last-child {
+	margin-bottom: 0;
+}
+
+.players a.button-green {
+	padding: 10px 20px;
+	background: #76ad76;
+	font-weight: bold;
+	color: #FFFFFF;
+	cursor: pointer;
+	font-family: 'Source Sans Pro', sans-serif;
+	margin-top: 10px;
+	display: inline-block;
+}
+
+.players a.button-green:hover {
+	background: #669966;
+	text-decoration: none;
+}
+
+.players .table-wrapper {
+	margin-bottom: 10px;
+	font-weight: bold;
+}
+
+.players .table-wrapper .col-md-6:last-child {
+	text-align: right;
+}
+
+.players .table-wrapper .table-value {
+	color: #76a6ad;
+}
+
+/* Game Screens */
+h3.total-header {
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: bold;
+	float: left;
+	margin: 52px 10px 0 184px;
+}
+
+span.total-number {
+	font-size: 32px;
+	font-weight: bold;
+	padding: 10px 16px;
+	border-radius: 200px;
+	background: #76a6ad;
+	color: #FFFFFF;
+	font-family: 'Source Sans Pro', sans-serif;
+	margin: 33px 0 0 0;
+	float: left;
+}
+
+table {
+	font-family: 'Source Sans Pro', sans-serif;
+	margin-bottom: 40px !important;
+}
+
+table:last-child {
+	margin-bottom: 0 !important;
+}
+
+.table>tbody>tr>td {
+	border: 0;
+}
+
+.table>thead>tr>th {
+	border-bottom: 0;
+}
+
+th.table-name, th.table-position, th.table-points {
+	background: #76a6ad;
+	color: #FFFFFF;
+}
+
+th.table-name {
+	border-top: 10px solid #333333 !important;
+}
+
+th.table-position {
+	border-top: 10px solid #666666 !important;
+}
+
+th.table-points {
+	border-top: 10px solid #999999 !important;
+}
+
+.table-striped>tbody>tr {
+	background: #e3e3e3;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+	background: #ffffff;
+}
+
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+	padding: 20px;
+}
+
+.table>tbody>tr>td, .table>thead>tr>th {
+	border-right: 1px solid #333333;
+}
+
+.table>tbody>tr>td:last-child, .table>thead>tr>th:last-child {
+	border-right: none;
+}
+
+.email-wrapper{
+	font-weight: bold;
+	background: #FFFFFF;
+	padding: 20px;
+	margin: 0 0 40px 0;
+}
+
+.email-wrapper h4 {
+	margin: 0;
+}
+
+/* Large Screens */
+@media only screen and (min-width : 1200px) {
+	.header form input[type="text"] {
+		width: 396px;
+	}
+
+	.content h1 {
+		margin: 40px 0 0 0;
+	}
+
+	h3.total-header {
+		margin: 68px 10px 0 264px;
+	}
+
+	span.total-number {
+		margin: 49px 0 0 0;
+	}
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 991px) {
+
+	.navbar-nav {
+		margin: 0 0 0 97px;
+	}
+
+	.game .content, .welcome .content {
+		text-align: center;
+	}
+
+	.game .content img, .welcome .content img {
+		display: inline-block;
+		max-width: 25%;
+		height: auto;
+	}
+
+	h3.total-header {
+		float: none;
+		margin: 40px 10px 10px 10px;
+	}
+
+	span.total-number {
+		margin: none;
+		float: none;
+		top: 10px;
+		padding: 12px 16px;
+		position: relative;
+	}
+
+	.players .table-wrapper .col-md-6, .players .table-wrapper .col-md-6:last-child {
+		text-align: center;
+	}
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) {
+	.navbar-nav {
+		margin: 20px 0;
+		text-align: center;
+	}
+
+	.navbar-nav li a {
+		padding: 10px 0;
+		background: #669999;
+	}
+
+	.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {
+		background: transparent;
+	}
+
+	.navbar-inverse .navbar-nav>li>a:focus, .navbar-inverse .navbar-nav>li>a:hover {
+		background: #336666;
+	}
+
+
+	.header form input[type="text"] {
+		width: 88%;
+	}
+
+	.players {
+		text-align: center;
+	}
+
+	.players img {
+		display: inline-block;
+		margin-bottom: 20px;
+	}
+
+	.players .col-sm-6 {
+		margin-bottom: 40px;
+	}
+
+	.players .col-sm-6:last-child {
+		margin-bottom: 0;
+	}
+
+	.players a.button-green {
+		width: 50%;
+		margin: 10px 0;
+	}
+
+	.game .content img, .welcome .content img {
+		display: inline-block;
+		max-width: 40%;
+		height: auto;
+	}
+
+	.table>tbody>tr>td, .table>thead>tr>th {
+		text-align: left;
+	}
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (max-width : 480px) {
+	.header form input[type="text"] {
+		width: 82%;
+	}
+
+	.game .content img, .welcome .content img {
+		display: inline-block;
+		max-width: 50%;
+		height: auto;
+	}
+
+	.players a.button-green {
+		width: 100%;
+		margin: 10px 0;
+	}
+}
+
+/* Custom, iPhone Retina */
+@media only screen and (max-width : 320px) {
+}

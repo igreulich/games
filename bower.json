@@ -1,0 +1,29 @@
+{
+  "name": "games",
+  "version": "0.0.1",
+  "authors": [
+    "Ian Greulich <ian@greulich.me>"
+  ],
+  "description": "A list of all the games I own",
+  "main": "./index.html",
+  "moduleType": [
+    "es6"
+  ],
+  "keywords": [
+    "games",
+    "boardgames"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "firebase": "~2.2.2",
+    "react": "~0.12.2",
+    "reactfire": "~0.4.0"
+  }
+}
