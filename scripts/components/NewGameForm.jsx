@@ -69,7 +69,7 @@ module.exports = React.createClass({
   },
 
   onNameChange(event) {
-    this.setState({name: e.target.value})
+    this.setState({name: event.target.value})
   },
 
   onPlayersChange(event) {

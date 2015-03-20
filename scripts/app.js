@@ -507,7 +507,7 @@
 		},
 
 		onNameChange: function onNameChange(event) {
-			this.setState({ name: e.target.value });
+			this.setState({ name: event.target.value });
 		},
 
 		onPlayersChange: function onPlayersChange(event) {
