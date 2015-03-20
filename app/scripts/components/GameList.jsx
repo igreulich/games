@@ -11,13 +11,12 @@ module.exports = React.createClass({
   displayName: 'GameList',
 
   render() {
-    var _this = this;
-
-    var gameItem = (item) => {
-      var edit = <EditItem key={item.id} item={item} onSaveEdit={_this.props.onSaveEdit} />;
-      var show = <GameItem key={item.id} item={item} onDeleteItem={() => _this.props.onDelete(item)} onEditItem={() => _this.props.onEdit(item)} />;
-
-      return item.isEditing ? edit : show;
+    var gameAction = game => {
+      if (game.isEditing) {
+        return <EditItem key={game.id} game={game} onUpdate={this.props.onUpdate} />;
+      } else {
+        return <GameItem key={game.id} game={game} user={this.props.user} onEdit={() => this.props.onEdit(game)} onDestroy={() => this.props.onDestroy(game)} />;
+      }
 		};
 
     return (
@@ -36,7 +35,7 @@ module.exports = React.createClass({
                 </tr>
               </thead>
               <tbody>
-                {this.props.items.map(gameItem)}
+                {this.props.games.map(gameAction)}
               </tbody>
             </table>
           </Row>

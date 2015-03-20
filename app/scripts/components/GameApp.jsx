@@ -9,74 +9,130 @@ var GameApp = React.createClass({
 
   getInitialState() {
     return {
-      items: [],
-      ref: new Firebase('https://gogames.firebaseio.com/items/')
+      uid:          '',
+      ref:          new Firebase('https://gogames.firebaseio.com/items/'),
+      games:        [],
+      query:        '',
+      searchGames:  [],
+      errorMessage: ''
     }
   },
 
   componentWillMount() {
-    this.bindAsArray(this.state.ref, 'items');
+    this.bindAsArray(this.state.ref, 'games');
+    this.bindAsArray(this.state.ref, 'searchGames');
   },
 
-  editItem(item) {
-    var ref   = this.state.ref;
-    var items = this.state.items;
-
-    var editIndex = items.indexOf(item);
-
-    items[editIndex].isEditing = true;
-
-    ref.set(items);
-  },
-
-  saveEdit(item) {
-    var ref   = this.state.ref;
-    var items = this.state.items;
-
-    var originalItem = items.filter((element) => {
-      return element.id === item.id;
-    });
-
-    originalItem = originalItem[0];
-
-    var editIndex = items.indexOf(originalItem);
-
-    item.isEditing = false;
-
-    items[editIndex] = item;
-
-    ref.set(items);
-  },
-
-  deleteItem(item) {
-    var ref   = this.state.ref;
-    var items = this.state.items;
-
-    var newItems = items.filter((element) => {
-      return element.id !== item.id
-    });
-
-    ref.set(newItems);
-  },
-
-  handleSubmit(item) {
-    this.firebaseRefs["items"].push({
-      name: item.title,
-      players: item.players,
-      coop: item.coop,
-      link: item.link,
-      id: Date.now()
-    });
+  componentWillUnmount() {
+    this.unbind('games');
   },
 
   render() {
     return (
       <div>
-        <Nav />
-        <GameList items={this.state.items} onDelete={this.deleteItem} onEdit={this.editItem} onSaveEdit={this.saveEdit} />
-        <NewGameForm onSubmit={this.handleSubmit} />
+        <Nav user={this.state.uid} query={this.state.query} onLogin={this.login} onLogout={this.logout} onSearch={this.search} />
+        <GameList user={this.state.uid} games={this.state.games} onEdit={this.edit} onUpdate={this.update} onDestroy={this.destroy} />
+        <NewGameForm user={this.state.uid} onSubmit={this.submit} />
       </div>
     );
+  },
+
+  login() {
+    var ref = this.state.ref;
+
+    ref.authWithOAuthPopup('github', (error, authData) => {
+      if (error) {
+        console.log('Login Failed! ', error);
+      } else {
+        this.setState({
+          uid: authData.uid
+        });
+      }
+    });
+  },
+
+  logout() {
+    var ref = this.state.ref;
+
+    ref.unauth();
+
+    this.setState({
+      uid: ''
+    });
+  },
+
+  search(query) {
+    var games   = this.state.searchGames;
+    var results = [];
+
+    games.forEach(game => {
+      if (game.name.toLowerCase().indexOf(query) !== -1) {
+        results.push(game);
+      }
+    });
+
+    this.setState({
+      query: query,
+      games: results
+    });
+  },
+
+  edit(game) {
+    var games = this.state.games;
+
+    var editIndex = games.indexOf(game);
+
+    games[editIndex].isEditing = true;
+
+    this._updateItems(games);
+  },
+
+  update(game) {
+    var games = this.state.games;
+
+    var originalGame = games.filter(element => {
+      return element.id === game.id;
+    });
+
+    originalGame = originalGame[0];
+
+    var editIndex = games.indexOf(originalGame);
+
+    game.isEditing = false;
+
+    games[editIndex] = game;
+
+    this._updateItems(games);
+  },
+
+  destroy(game) {
+    var games = this.state.games;
+
+    var newGames = games.filter(element => {
+      return element.id !== game.id
+    });
+
+    this._updateItems(newGames);
+  },
+
+  submit(game) {
+    this.state.ref.push({
+      id:      Date.now(),
+      name:    game.name,
+      coop:    game.coop,
+      link:    game.link,
+      players: game.players
+    });
+  },
+
+  _updateItems(games) {
+    var ref   = this.state.ref;
+
+    ref.set(games);
+
+    this.setState({
+      searchItems: games
+    });
   }
 });
 

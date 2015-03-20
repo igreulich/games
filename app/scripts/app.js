@@ -57,74 +57,132 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      items: [],
-	      ref: new Firebase("https://gogames.firebaseio.com/items/")
+	      uid: "",
+	      ref: new Firebase("https://gogames.firebaseio.com/items/"),
+	      games: [],
+	      query: "",
+	      searchGames: [],
+	      errorMessage: ""
 	    };
 	  },
 
 	  componentWillMount: function componentWillMount() {
-	    this.bindAsArray(this.state.ref, "items");
+	    this.bindAsArray(this.state.ref, "games");
+	    this.bindAsArray(this.state.ref, "searchGames");
 	  },
 
-	  editItem: function editItem(item) {
-	    var ref = this.state.ref;
-	    var items = this.state.items;
-
-	    var editIndex = items.indexOf(item);
-
-	    items[editIndex].isEditing = true;
-
-	    ref.set(items);
-	  },
-
-	  saveEdit: function saveEdit(item) {
-	    var ref = this.state.ref;
-	    var items = this.state.items;
-
-	    var originalItem = items.filter(function (element) {
-	      return element.id === item.id;
-	    });
-
-	    originalItem = originalItem[0];
-
-	    var editIndex = items.indexOf(originalItem);
-
-	    item.isEditing = false;
-
-	    items[editIndex] = item;
-
-	    ref.set(items);
-	  },
-
-	  deleteItem: function deleteItem(item) {
-	    var ref = this.state.ref;
-	    var items = this.state.items;
-
-	    var newItems = items.filter(function (element) {
-	      return element.id !== item.id;
-	    });
-
-	    ref.set(newItems);
-	  },
-
-	  handleSubmit: function handleSubmit(item) {
-	    this.firebaseRefs.items.push({
-	      name: item.title,
-	      players: item.players,
-	      coop: item.coop,
-	      link: item.link,
-	      id: Date.now()
-	    });
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.unbind("games");
 	  },
 
 	  render: function render() {
 	    return React.createElement(
 	      "div",
 	      null,
-	      React.createElement(Nav, null),
-	      React.createElement(GameList, { items: this.state.items, onDelete: this.deleteItem, onEdit: this.editItem, onSaveEdit: this.saveEdit }),
-	      React.createElement(NewGameForm, { onSubmit: this.handleSubmit })
+	      React.createElement(Nav, { user: this.state.uid, query: this.state.query, onLogin: this.login, onLogout: this.logout, onSearch: this.search }),
+	      React.createElement(GameList, { user: this.state.uid, games: this.state.games, onEdit: this.edit, onUpdate: this.update, onDestroy: this.destroy }),
+	      React.createElement(NewGameForm, { user: this.state.uid, onSubmit: this.submit })
 	    );
+	  },
+
+	  login: function login() {
+	    var _this = this;
+
+	    var ref = this.state.ref;
+
+	    ref.authWithOAuthPopup("github", function (error, authData) {
+	      if (error) {
+	        console.log("Login Failed! ", error);
+	      } else {
+	        _this.setState({
+	          uid: authData.uid
+	        });
+	      }
+	    });
+	  },
+
+	  logout: function logout() {
+	    var ref = this.state.ref;
+
+	    ref.unauth();
+
+	    this.setState({
+	      uid: ""
+	    });
+	  },
+
+	  search: function search(query) {
+	    var games = this.state.searchGames;
+	    var results = [];
+
+	    games.forEach(function (game) {
+	      if (game.name.toLowerCase().indexOf(query) !== -1) {
+	        results.push(game);
+	      }
+	    });
+
+	    this.setState({
+	      query: query,
+	      games: results
+	    });
+	  },
+
+	  edit: function edit(game) {
+	    var games = this.state.games;
+
+	    var editIndex = games.indexOf(game);
+
+	    games[editIndex].isEditing = true;
+
+	    this._updateItems(games);
+	  },
+
+	  update: function update(game) {
+	    var games = this.state.games;
+
+	    var originalGame = games.filter(function (element) {
+	      return element.id === game.id;
+	    });
+
+	    originalGame = originalGame[0];
+
+	    var editIndex = games.indexOf(originalGame);
+
+	    game.isEditing = false;
+
+	    games[editIndex] = game;
+
+	    this._updateItems(games);
+	  },
+
+	  destroy: function destroy(game) {
+	    var games = this.state.games;
+
+	    var newGames = games.filter(function (element) {
+	      return element.id !== game.id;
+	    });
+
+	    this._updateItems(newGames);
+	  },
+
+	  submit: function submit(game) {
+	    this.state.ref.push({
+	      id: Date.now(),
+	      name: game.name,
+	      coop: game.coop,
+	      link: game.link,
+	      players: game.players
+	    });
+	  },
+
+	  _updateItems: function _updateItems(games) {
+	    var ref = this.state.ref;
+
+	    ref.set(games);
+
+	    this.setState({
+	      searchItems: games
+	    });
 	  }
 	});
 
@@ -146,9 +204,32 @@
 		displayName: "Nav",
 
 		render: function render() {
+			var authLink;
 			var liStyles = {
 				visibility: "hidden"
 			};
+
+			if (this.props.user) {
+				authLink = React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ href: "#", onClick: this.logout },
+						"Sign Out"
+					)
+				);
+			} else {
+				authLink = React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ href: "#", onClick: this.login },
+						"Sign In"
+					)
+				);
+			}
 
 			return React.createElement(
 				"header",
@@ -210,20 +291,12 @@
 												"Profile"
 											)
 										),
-										React.createElement(
-											"li",
-											{ style: liStyles },
-											React.createElement(
-												"a",
-												{ href: "contact.php" },
-												"Sign Out"
-											)
-										)
+										authLink
 									),
 									React.createElement(
 										"form",
 										null,
-										React.createElement("input", { type: "text", name: "search", placeholder: "Search" }),
+										React.createElement("input", { type: "text", name: "search", ref: "search", placeholder: "Search", value: this.props.query, onChange: this.search }),
 										React.createElement("input", { type: "image", src: "images/icon-search.png", alt: "Submit" })
 									)
 								)
@@ -232,6 +305,20 @@
 					)
 				)
 			);
+		},
+
+		login: function login() {
+			this.props.onLogin();
+		},
+
+		logout: function logout() {
+			this.props.onLogout();
+		},
+
+		search: function search() {
+			var query = this.refs.search.getDOMNode().value;
+
+			this.props.onSearch(query);
 		}
 	});
 
@@ -255,15 +342,16 @@
 	  render: function render() {
 	    var _this = this;
 
-	    var gameItem = function (item) {
-	      var edit = React.createElement(EditItem, { key: item.id, item: item, onSaveEdit: _this.props.onSaveEdit });
-	      var show = React.createElement(GameItem, { key: item.id, item: item, onDeleteItem: function () {
-	          return _this.props.onDelete(item);
-	        }, onEditItem: function () {
-	          return _this.props.onEdit(item);
-	        } });
-
-	      return item.isEditing ? edit : show;
+	    var gameAction = function (game) {
+	      if (game.isEditing) {
+	        return React.createElement(EditItem, { key: game.id, game: game, onUpdate: _this.props.onUpdate });
+	      } else {
+	        return React.createElement(GameItem, { key: game.id, game: game, user: _this.props.user, onEdit: function () {
+	            return _this.props.onEdit(game);
+	          }, onDestroy: function () {
+	            return _this.props.onDestroy(game);
+	          } });
+	      }
 	    };
 
 	    return React.createElement(
@@ -313,7 +401,7 @@
 	            React.createElement(
 	              "tbody",
 	              null,
-	              this.props.items.map(gameItem)
+	              this.props.games.map(gameAction)
 	            )
 	          )
 	        )
@@ -341,51 +429,28 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				title: "",
-				players: "",
 				coop: "",
-				link: ""
+				link: "",
+				name: "",
+				players: ""
 			};
 		},
 
-		handleSubmit: function handleSubmit(e) {
-			e.preventDefault();
-
-			this.props.onSubmit(this.state);
-
-			this.setState({
-				title: "",
-				players: "",
-				coop: "",
-				link: "" });
-		},
-
-		onTitleChange: function onTitleChange(e) {
-			this.setState({ title: e.target.value });
-		},
-
-		onPlayersChange: function onPlayersChange(e) {
-			this.setState({ players: e.target.value });
-		},
-
-		onCoopChange: function onCoopChange(e) {
-			this.setState({ coop: e.target.value });
-		},
-
-		onLinkChange: function onLinkChange(e) {
-			this.setState({ link: e.target.value });
-		},
-
 		render: function render() {
+			var showForm = this.props.user ? true : false;
+			var formStyles = {
+				display: showForm ? "" : "none"
+			};
+
 			return React.createElement(
 				"section",
-				{ className: "content" },
+				{ style: formStyles, className: "content" },
 				React.createElement(
 					Grid,
 					null,
 					React.createElement(
 						"form",
-						{ onSubmit: this.handleSubmit },
+						{ onSubmit: this.submit },
 						React.createElement(
 							Input,
 							{ label: "New Game", wrapperClassName: "wrapper" },
@@ -395,17 +460,17 @@
 								React.createElement(
 									Col,
 									{ xs: 4 },
-									React.createElement(Input, { ref: "gameTitle", placeholder: "Enter game", type: "text", onChange: this.onTitleChange, value: this.state.title })
+									React.createElement(Input, { type: "text", ref: "gameName", placeholder: "Enter game", onChange: this.onNameChange, value: this.state.name })
 								),
 								React.createElement(
 									Col,
 									{ xs: 4 },
-									React.createElement(Input, { ref: "gamePLayers", placeholder: "Enter no. players", type: "text", onChange: this.onPlayersChange, value: this.state.players })
+									React.createElement(Input, { type: "text", ref: "gamePLayers", placeholder: "Enter no. players", onChange: this.onPlayersChange, value: this.state.players })
 								),
 								React.createElement(
 									Col,
 									{ xs: 4 },
-									React.createElement(Input, { ref: "gameCoop", placeholder: "Enter co-op", type: "text", onChange: this.onCoopChange, value: this.state.coop })
+									React.createElement(Input, { type: "text", ref: "gameCoop", placeholder: "Enter co-op", onChange: this.onCoopChange, value: this.state.coop })
 								)
 							),
 							React.createElement(
@@ -414,7 +479,7 @@
 								React.createElement(
 									Col,
 									{ xs: 6, xsPush: 3 },
-									React.createElement(Input, { ref: "gameLink", placeholder: "Enter link", type: "text", onChange: this.onLinkChange, value: this.state.link })
+									React.createElement(Input, { type: "text", ref: "gameLink", placeholder: "Enter link", onChange: this.onLinkChange, value: this.state.link })
 								)
 							)
 						),
@@ -426,6 +491,35 @@
 					)
 				)
 			);
+		},
+
+		submit: function submit(event) {
+			event.preventDefault();
+
+			this.props.onSubmit(this.state);
+
+			this.setState({
+				coop: "",
+				link: "",
+				name: "",
+				players: ""
+			});
+		},
+
+		onNameChange: function onNameChange(event) {
+			this.setState({ name: e.target.value });
+		},
+
+		onPlayersChange: function onPlayersChange(event) {
+			this.setState({ players: event.target.value });
+		},
+
+		onCoopChange: function onCoopChange(event) {
+			this.setState({ coop: event.target.value });
+		},
+
+		onLinkChange: function onLinkChange(event) {
+			this.setState({ link: event.target.value });
 		}
 	});
 
@@ -444,28 +538,11 @@
 	module.exports = React.createClass({
 	  displayName: "GameItem",
 
-	  getInitialState: function getInitialState() {
-	    return {
-	      name: this.props.item.name,
-	      players: this.props.item.players,
-	      coop: this.props.item.coop,
-	      link: this.props.item.link
-	    };
-	  },
-
-	  deleteItem: function deleteItem(e) {
-	    e.preventDefault();
-
-	    this.props.onDeleteItem();
-	  },
-
-	  editItem: function editItem(e) {
-	    e.preventDefault();
-
-	    this.props.onEditItem();
-	  },
-
 	  render: function render() {
+	    var spanStyles = {
+	      display: this.props.user ? "" : "none"
+	    };
+
 	    return React.createElement(
 	      "tr",
 	      null,
@@ -474,22 +551,22 @@
 	        null,
 	        React.createElement(
 	          "a",
-	          { href: this.state.link, target: "_blank" },
-	          this.state.name
+	          { href: this.props.game.link, target: "_blank" },
+	          this.props.game.name
 	        ),
 	        " ",
 	        React.createElement(
 	          "span",
-	          { className: "pull-right" },
+	          { className: "pull-right", style: spanStyles },
 	          React.createElement(
 	            "a",
-	            { href: "#", onClick: this.editItem },
+	            { href: "#", onClick: this.edit },
 	            "edit"
 	          ),
 	          " | ",
 	          React.createElement(
 	            "a",
-	            { href: "#", onClick: this.deleteItem },
+	            { href: "#", onClick: this.destroy },
 	            "delete"
 	          )
 	        )
@@ -497,14 +574,26 @@
 	      React.createElement(
 	        "td",
 	        null,
-	        this.state.players
+	        this.props.game.players
 	      ),
 	      React.createElement(
 	        "td",
 	        null,
-	        this.state.coop
+	        this.props.game.coop
 	      )
 	    );
+	  },
+
+	  edit: function edit(event) {
+	    event.preventDefault();
+
+	    this.props.onEdit();
+	  },
+
+	  destroy: function destroy(event) {
+	    event.preventDefault();
+
+	    this.props.onDeestroy();
 	  }
 	});
 
@@ -523,34 +612,12 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      id: this.props.item.id,
-	      name: this.props.item.name,
-	      players: this.props.item.players,
-	      coop: this.props.item.coop,
-	      link: this.props.item.link
+	      id: this.props.game.id,
+	      coop: this.props.game.coop,
+	      link: this.props.game.link,
+	      name: this.props.game.name,
+	      players: this.props.game.players
 	    };
-	  },
-
-	  saveEdit: function saveEdit(e) {
-	    e.preventDefault();
-
-	    this.props.onSaveEdit(this.state);
-	  },
-
-	  onNameChange: function onNameChange(e) {
-	    this.setState({ name: e.target.value });
-	  },
-
-	  onPlayersChange: function onPlayersChange(e) {
-	    this.setState({ players: e.target.value });
-	  },
-
-	  onCoopChange: function onCoopChange(e) {
-	    this.setState({ coop: e.target.value });
-	  },
-
-	  onLinkChange: function onLinkChange(e) {
-	    this.setState({ link: e.target.value });
 	  },
 
 	  render: function render() {
@@ -560,29 +627,51 @@
 	      React.createElement(
 	        "td",
 	        null,
-	        React.createElement(Input, { ref: "gameTitle", value: this.state.name, type: "text", onChange: this.onNameChange })
+	        React.createElement(Input, { type: "text", ref: "gameName", value: this.state.name, onChange: this.onNameChange })
 	      ),
 	      React.createElement(
 	        "td",
 	        null,
-	        React.createElement(Input, { ref: "gamePlayers", value: this.state.players, type: "text", onChange: this.onPlayersChange })
+	        React.createElement(Input, { type: "text", ref: "gamePlayers", value: this.state.players, onChange: this.onPlayersChange })
 	      ),
 	      React.createElement(
 	        "td",
 	        null,
-	        React.createElement(Input, { ref: "gameCoop", value: this.state.coop, type: "text", onChange: this.onCoopChange }),
+	        React.createElement(Input, { type: "text", ref: "gameCoop", value: this.state.coop, onChange: this.onCoopChange }),
 	        " ",
 	        React.createElement(
 	          "span",
 	          { className: "pull-right" },
 	          React.createElement(
 	            "a",
-	            { href: "#", onClick: this.saveEdit },
+	            { href: "#", onClick: this.update },
 	            "save"
 	          )
 	        )
 	      )
 	    );
+	  },
+
+	  onNameChange: function onNameChange(event) {
+	    this.setState({ name: event.target.value });
+	  },
+
+	  onPlayersChange: function onPlayersChange(event) {
+	    this.setState({ players: event.target.value });
+	  },
+
+	  onCoopChange: function onCoopChange(event) {
+	    this.setState({ coop: event.target.value });
+	  },
+
+	  onLinkChange: function onLinkChange(event) {
+	    this.setState({ link: event.target.value });
+	  },
+
+	  update: function update(event) {
+	    event.preventDefault();
+
+	    this.props.onUpdate(this.state);
 	  }
 	});
 

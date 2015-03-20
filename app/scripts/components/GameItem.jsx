@@ -3,34 +3,29 @@
 module.exports = React.createClass({
   displayName: 'GameItem',
 
-  getInitialState() {
-    return {
-      name: this.props.item.name,
-      players: this.props.item.players,
-      coop: this.props.item.coop,
-      link: this.props.item.link
-    }
-  },
-
-  deleteItem(e) {
-    e.preventDefault();
-
-    this.props.onDeleteItem();
-  },
-
-  editItem(e) {
-    e.preventDefault();
-
-    this.props.onEditItem();
-  },
-
 	render() {
+    var spanStyles = {
+      display: this.props.user ? '' : 'none'
+    };
+
     return (
       <tr>
-        <td><a href={this.state.link} target="_blank">{this.state.name}</a> <span className="pull-right"><a href='#' onClick={this.editItem}>edit</a> | <a href='#' onClick={this.deleteItem}>delete</a></span></td>
-        <td>{this.state.players}</td>
-        <td>{this.state.coop}</td>
+        <td><a href={this.props.game.link} target="_blank">{this.props.game.name}</a> <span className="pull-right" style={spanStyles}><a href='#' onClick={this.edit}>edit</a> | <a href='#' onClick={this.destroy}>delete</a></span></td>
+        <td>{this.props.game.players}</td>
+        <td>{this.props.game.coop}</td>
       </tr>
     );
+  },
+
+  edit(event) {
+    event.preventDefault();
+
+    this.props.onEdit();
+  },
+
+  destroy(event) {
+    event.preventDefault();
+
+    this.props.onDeestroy();
 	}
 });

@@ -13,62 +13,38 @@ module.exports = React.createClass({
 
   getInitialState() {
     return {
-			title: '',
-			players: '',
-			coop: '',
-			link:''
+			coop:     '',
+      link:     '',
+			name:     '',
+			players:  ''
     };
   },
 
-  handleSubmit(e) {
-    e.preventDefault();
-
-    this.props.onSubmit(this.state);
-
-		this.setState({
-			title: '',
-			players: '',
-			coop: '',
-			link: '',
-		});
-  },
-
-  onTitleChange(e) {
-    this.setState({title: e.target.value})
-  },
-
-  onPlayersChange(e) {
-    this.setState({players: e.target.value})
-  },
-
-  onCoopChange(e) {
-    this.setState({coop: e.target.value})
-  },
-
-  onLinkChange(e) {
-    this.setState({link: e.target.value})
-  },
-
   render() {
+    const showForm = this.props.user ? true : false;
+    var formStyles = {
+      display: showForm ? '' : 'none'
+    };
+
 		return (
-			<section className="content">
+			<section style={formStyles} className="content">
 				<Grid>
-					<form onSubmit={this.handleSubmit}>
+					<form onSubmit={this.submit}>
 						<Input label="New Game" wrapperClassName="wrapper">
 							<Row>
 								<Col xs={4}>
-									<Input ref='gameTitle' placeholder='Enter game' type='text' onChange={this.onTitleChange} value={this.state.title} />
+									<Input type='text' ref='gameName' placeholder='Enter game' onChange={this.onNameChange} value={this.state.name} />
 								</Col>
 								<Col xs={4}>
-									<Input ref='gamePLayers' placeholder='Enter no. players' type='text' onChange={this.onPlayersChange} value={this.state.players} />
+									<Input type='text' ref='gamePLayers' placeholder='Enter no. players'  onChange={this.onPlayersChange} value={this.state.players} />
 								</Col>
 								<Col xs={4}>
-									<Input ref='gameCoop' placeholder='Enter co-op' type='text' onChange={this.onCoopChange} value={this.state.coop} />
+									<Input type='text' ref='gameCoop' placeholder='Enter co-op' onChange={this.onCoopChange} value={this.state.coop} />
 								</Col>
 							</Row>
 							<Row>
 								<Col xs={6} xsPush={3}>
-									<Input ref='gameLink' placeholder='Enter link' type='text' onChange={this.onLinkChange} value={this.state.link} />
+									<Input type='text' ref='gameLink' placeholder='Enter link'  onChange={this.onLinkChange} value={this.state.link} />
 								</Col>
 							</Row>
 						</Input>
@@ -77,5 +53,34 @@ module.exports = React.createClass({
 				</Grid>
 			</section>
     );
+  },
+
+  submit(event) {
+    event.preventDefault();
+
+    this.props.onSubmit(this.state);
+
+		this.setState({
+			coop:    '',
+			link:    '',
+			name:    '',
+			players: ''
+		});
+  },
+
+  onNameChange(event) {
+    this.setState({name: e.target.value})
+  },
+
+  onPlayersChange(event) {
+    this.setState({players: event.target.value})
+  },
+
+  onCoopChange(event) {
+    this.setState({coop: event.target.value})
+  },
+
+  onLinkChange(event) {
+    this.setState({link: event.target.value})
   }
 });

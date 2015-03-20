@@ -9,10 +9,17 @@ const {
 module.exports = React.createClass({
   displayName: 'Nav',
 
-	render() {
+  render() {
+    var authLink;
 		var liStyles = {
 			visibility: 'hidden'
-		}
+    }
+
+    if (this.props.user) {
+      authLink = <li><a href="#" onClick={this.logout}>Sign Out</a></li>
+    } else {
+      authLink = <li><a href="#" onClick={this.login}>Sign In</a></li>
+    }
 
 		return (
 			<header className="header">
@@ -37,10 +44,11 @@ module.exports = React.createClass({
 								<div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 									<ul className="nav navbar-nav">
 										<li style={liStyles}><a href="#">Profile</a></li>
-										<li style={liStyles}><a href="contact.php">Sign Out</a></li>
-									</ul>
+                    {authLink}
+                  </ul>
 									<form>
-										<input type="text" name="search" placeholder="Search" />
+										<input type="text" name="search" ref="search" placeholder="Search" value={this.props.query} onChange={this.search} />
+
 										<input type="image" src="images/icon-search.png" alt="Submit" />
 									</form>
 								</div>
@@ -50,5 +58,19 @@ module.exports = React.createClass({
 				</Grid>
 			</header>
 		);
-	}
+	},
+
+  login() {
+    this.props.onLogin();
+  },
+
+  logout() {
+    this.props.onLogout();
+  },
+
+  search() {
+    var query = this.refs.search.getDOMNode().value;
+
+    this.props.onSearch(query);
+  }
 });

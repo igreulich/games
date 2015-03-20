@@ -7,43 +7,43 @@ module.exports = React.createClass({
 
   getInitialState() {
     return {
-      id: this.props.item.id,
-      name: this.props.item.name,
-      players: this.props.item.players,
-      coop: this.props.item.coop,
-      link: this.props.item.link
+      id:      this.props.game.id,
+      coop:    this.props.game.coop,
+      link:    this.props.game.link,
+      name:    this.props.game.name,
+      players: this.props.game.players
     }
-  },
-
-  saveEdit(e) {
-    e.preventDefault();
-
-    this.props.onSaveEdit(this.state);
-  },
-
-  onNameChange(e) {
-    this.setState({name: e.target.value})
-  },
-
-  onPlayersChange(e) {
-    this.setState({players: e.target.value})
-  },
-
-  onCoopChange(e) {
-    this.setState({coop: e.target.value})
-  },
-
-  onLinkChange(e) {
-    this.setState({link: e.target.value})
   },
 
   render() {
     return (
       <tr>
-        <td><Input ref="gameTitle" value={this.state.name} type='text' onChange={this.onNameChange} /></td>
-        <td><Input ref="gamePlayers" value={this.state.players} type='text' onChange={this.onPlayersChange} /></td>
-        <td><Input ref="gameCoop" value={this.state.coop} type='text' onChange={this.onCoopChange} /> <span className="pull-right"><a href="#" onClick={this.saveEdit}>save</a></span></td>
+        <td><Input type='text' ref="gameName" value={this.state.name} onChange={this.onNameChange} /></td>
+        <td><Input type='text' ref="gamePlayers" value={this.state.players} onChange={this.onPlayersChange} /></td>
+        <td><Input type='text' ref="gameCoop" value={this.state.coop} onChange={this.onCoopChange} /> <span className="pull-right"><a href="#" onClick={this.update}>save</a></span></td>
       </tr>
     );
+  },
+
+  onNameChange(event) {
+    this.setState({name: event.target.value})
+  },
+
+  onPlayersChange(event) {
+    this.setState({players: event.target.value})
+  },
+
+  onCoopChange(event) {
+    this.setState({coop: event.target.value})
+  },
+
+  onLinkChange(event) {
+    this.setState({link: event.target.value})
+  },
+
+  update(event) {
+    event.preventDefault();
+
+    this.props.onUpdate(this.state);
   }
 });
