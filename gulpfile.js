@@ -9,6 +9,7 @@ var path        = require('path');
 var less        = require('gulp-less');
 var autoprefix  = require('gulp-autoprefixer');
 var webpack     = require('webpack');
+var deploy      = require('gulp-gh-pages');
 
 var reload = browserSync.reload;
 
@@ -87,6 +88,11 @@ gulp.task('build:fonts', function() {
   .pipe(notify({title: 'Gulp Build', message: 'Finished building fonts'}));
 });
 
+gulp.task('deploy', ['build'], function() {
+  gulp.src('./app/**/*')
+  .pipe(deploy())
+  .pipe(notify({title: 'Gulp Deploy', message: 'Deployed to Github Pages.'}));
+});
 
 gulp.task('watch', function() {
   gulp.watch('app/scripts/components/**/*.jsx', ['build:app']);
