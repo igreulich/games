@@ -31,7 +31,7 @@ var GameApp = React.createClass({
     return (
       <div>
         <Nav user={this.state.uid} query={this.state.query} onLogin={this.login} onLogout={this.logout} onSearch={this.search} />
-        <GameList user={this.state.uid} games={this.state.games} onEdit={this.edit} onUpdate={this.update} onDestroy={this.destroy} />
+        <GameList user={this.state.uid} games={this.state.games} onEdit={this.edit} onUpdate={this.update} onDestroy={this.destroy} onAsecSort={this.asecSort} onDescSort={this.descSort} />
         <NewGameForm user={this.state.uid} onSubmit={this.submit} />
       </div>
     );
@@ -122,6 +122,48 @@ var GameApp = React.createClass({
       coop:    game.coop,
       link:    game.link,
       players: game.players
+    });
+  },
+
+  asecSort() {
+    var games = this.state.games;
+
+    var comparator = (a, b) => {
+      var sort = 0;
+
+      if (a.name < b.name) {
+        sort = -1;
+      }
+      if (a.name > b.name) {
+        sort = 1;
+      }
+
+      return sort
+    };
+
+    this.setState({
+      games: games.sort(comparator)
+    });
+  },
+
+  descSort() {
+    var games = this.state.games;
+
+    var comparator = (a, b) => {
+      var sort = 0;
+
+      if (a.name < b.name) {
+        sort = 1;
+      }
+      if (a.name > b.name) {
+        sort = -1;
+      }
+
+      return sort
+    };
+
+    this.setState({
+      games: games.sort(comparator)
     });
   },
 

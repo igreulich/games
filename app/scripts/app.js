@@ -80,7 +80,7 @@
 	      "div",
 	      null,
 	      React.createElement(Nav, { user: this.state.uid, query: this.state.query, onLogin: this.login, onLogout: this.logout, onSearch: this.search }),
-	      React.createElement(GameList, { user: this.state.uid, games: this.state.games, onEdit: this.edit, onUpdate: this.update, onDestroy: this.destroy }),
+	      React.createElement(GameList, { user: this.state.uid, games: this.state.games, onEdit: this.edit, onUpdate: this.update, onDestroy: this.destroy, onAsecSort: this.asecSort, onDescSort: this.descSort }),
 	      React.createElement(NewGameForm, { user: this.state.uid, onSubmit: this.submit })
 	    );
 	  },
@@ -172,6 +172,48 @@
 	      coop: game.coop,
 	      link: game.link,
 	      players: game.players
+	    });
+	  },
+
+	  asecSort: function asecSort() {
+	    var games = this.state.games;
+
+	    var comparator = function (a, b) {
+	      var sort = 0;
+
+	      if (a.name < b.name) {
+	        sort = -1;
+	      }
+	      if (a.name > b.name) {
+	        sort = 1;
+	      }
+
+	      return sort;
+	    };
+
+	    this.setState({
+	      games: games.sort(comparator)
+	    });
+	  },
+
+	  descSort: function descSort() {
+	    var games = this.state.games;
+
+	    var comparator = function (a, b) {
+	      var sort = 0;
+
+	      if (a.name < b.name) {
+	        sort = 1;
+	      }
+	      if (a.name > b.name) {
+	        sort = -1;
+	      }
+
+	      return sort;
+	    };
+
+	    this.setState({
+	      games: games.sort(comparator)
 	    });
 	  },
 
@@ -384,7 +426,21 @@
 	                React.createElement(
 	                  "th",
 	                  { className: "table-name" },
-	                  "Game"
+	                  "Game ",
+	                  React.createElement(
+	                    "span",
+	                    { className: "pull-right" },
+	                    React.createElement(
+	                      "a",
+	                      { href: "#", onClick: this.props.onAsecSort },
+	                      React.createElement("span", { className: "glyphicon glyphicon-chevron-up" })
+	                    ),
+	                    React.createElement(
+	                      "a",
+	                      { href: "#", onClick: this.props.onDescSort },
+	                      React.createElement("span", { className: "glyphicon glyphicon-chevron-down", "aria-hidden": "true" })
+	                    )
+	                  )
 	                ),
 	                React.createElement(
 	                  "th",
