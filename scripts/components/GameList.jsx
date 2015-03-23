@@ -23,7 +23,9 @@ module.exports = React.createClass({
       <section className="players">
         <Grid>
           <div className="email-wrapper">
-            <h4>Greulich's Games</h4>
+            <h3 className="pull-left">Greulich's Games</h3>
+            <h4 className="pull-right">Total: {this.props.games.length}</h4>
+            <div className="clearfix"></div>
           </div>
           <Row className="table-wrapper">
             <table className="table table-striped">
@@ -38,6 +40,7 @@ module.exports = React.createClass({
                 {this.props.games.map(gameAction)}
               </tbody>
             </table>
+            <p className="pull-right">* - Expansion, and requires base game to play.</p>
           </Row>
         </Grid>
       </section>
