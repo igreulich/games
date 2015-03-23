@@ -116,7 +116,7 @@
 	    var results = [];
 
 	    games.forEach(function (game) {
-	      if (game.name.toLowerCase().indexOf(query) !== -1) {
+	      if (game.name.toLowerCase().indexOf(query.toLowerCase()) !== -1) {
 	        results.push(game);
 	      }
 	    });
