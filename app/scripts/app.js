@@ -406,10 +406,17 @@
 	          "div",
 	          { className: "email-wrapper" },
 	          React.createElement(
-	            "h4",
-	            null,
+	            "h3",
+	            { className: "pull-left" },
 	            "Greulich's Games"
-	          )
+	          ),
+	          React.createElement(
+	            "h4",
+	            { className: "pull-right" },
+	            "Total: ",
+	            this.props.games.length
+	          ),
+	          React.createElement("div", { className: "clearfix" })
 	        ),
 	        React.createElement(
 	          Row,
@@ -459,6 +466,11 @@
 	              null,
 	              this.props.games.map(gameAction)
 	            )
+	          ),
+	          React.createElement(
+	            "p",
+	            { className: "pull-right" },
+	            "* - Expansion, and requires base game to play."
 	          )
 	        )
 	      )
