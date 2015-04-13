@@ -13,10 +13,11 @@ module.exports = React.createClass({
 
   getInitialState() {
     return {
-			coop:     '',
-      link:     '',
-			name:     '',
-			players:  ''
+			coop:      '',
+      link:      '',
+			name:      '',
+      players:   '',
+      expansion: ''
     };
   },
 
@@ -32,15 +33,22 @@ module.exports = React.createClass({
 					<form onSubmit={this.submit}>
 						<Input label="New Game" wrapperClassName="wrapper">
 							<Row>
-								<Col xs={4}>
+								<Col xs={3}>
 									<Input type='text' ref='gameName' placeholder='Enter game' onChange={this.onNameChange} value={this.state.name} />
 								</Col>
-								<Col xs={4}>
+								<Col xs={3}>
 									<Input type='text' ref='gamePLayers' placeholder='Enter no. players'  onChange={this.onPlayersChange} value={this.state.players} />
 								</Col>
-								<Col xs={4}>
+								<Col xs={3}>
 									<Input type='text' ref='gameCoop' placeholder='Enter co-op' onChange={this.onCoopChange} value={this.state.coop} />
-								</Col>
+                </Col>
+                <Col xs={3}>
+                  <Input type='select' ref='gameExpansion' onChange={this.onExpansionChange} value={this.state.expansion}>
+                    <option>Type</option>
+                    <option value="Base">Base</option>
+                    <option value="Expansion">Expansion</option>
+                  </Input>
+                </Col>
 							</Row>
 							<Row>
 								<Col xs={6} xsPush={3}>
@@ -61,10 +69,11 @@ module.exports = React.createClass({
     this.props.onSubmit(this.state);
 
 		this.setState({
-			coop:    '',
-			link:    '',
-			name:    '',
-			players: ''
+			coop:      '',
+			link:      '',
+			name:      '',
+      players:   '',
+      expansion: ''
 		});
   },
 
@@ -78,6 +87,10 @@ module.exports = React.createClass({
 
   onCoopChange(event) {
     this.setState({coop: event.target.value})
+  },
+
+  onExpansionChange(event) {
+    this.setState({expansion: event.target.value})
   },
 
   onLinkChange(event) {
