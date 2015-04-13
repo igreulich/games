@@ -171,7 +171,8 @@
 	      name: game.name,
 	      coop: game.coop,
 	      link: game.link,
-	      players: game.players
+	      players: game.players,
+	      expansion: game.expansion
 	    });
 	  },
 
@@ -458,6 +459,11 @@
 	                  "th",
 	                  { className: "table-points" },
 	                  "Cooperative"
+	                ),
+	                React.createElement(
+	                  "th",
+	                  { className: "table-points" },
+	                  "Type"
 	                )
 	              )
 	            ),
@@ -466,11 +472,6 @@
 	              null,
 	              this.props.games.map(gameAction)
 	            )
-	          ),
-	          React.createElement(
-	            "p",
-	            { className: "pull-right" },
-	            "* - Expansion, and requires base game to play."
 	          )
 	        )
 	      )
@@ -493,102 +494,131 @@
 	var Button = _require.Button;
 
 	module.exports = React.createClass({
-		displayName: "NewGameForm",
+	  displayName: "NewGameForm",
 
-		getInitialState: function getInitialState() {
-			return {
-				coop: "",
-				link: "",
-				name: "",
-				players: ""
-			};
-		},
+	  getInitialState: function getInitialState() {
+	    return {
+	      coop: "",
+	      link: "",
+	      name: "",
+	      players: "",
+	      expansion: ""
+	    };
+	  },
 
-		render: function render() {
-			var showForm = this.props.user ? true : false;
-			var formStyles = {
-				display: showForm ? "" : "none"
-			};
+	  render: function render() {
+	    var showForm = this.props.user ? true : false;
+	    var formStyles = {
+	      display: showForm ? "" : "none"
+	    };
 
-			return React.createElement(
-				"section",
-				{ style: formStyles, className: "content" },
-				React.createElement(
-					Grid,
-					null,
-					React.createElement(
-						"form",
-						{ onSubmit: this.submit },
-						React.createElement(
-							Input,
-							{ label: "New Game", wrapperClassName: "wrapper" },
-							React.createElement(
-								Row,
-								null,
-								React.createElement(
-									Col,
-									{ xs: 4 },
-									React.createElement(Input, { type: "text", ref: "gameName", placeholder: "Enter game", onChange: this.onNameChange, value: this.state.name })
-								),
-								React.createElement(
-									Col,
-									{ xs: 4 },
-									React.createElement(Input, { type: "text", ref: "gamePLayers", placeholder: "Enter no. players", onChange: this.onPlayersChange, value: this.state.players })
-								),
-								React.createElement(
-									Col,
-									{ xs: 4 },
-									React.createElement(Input, { type: "text", ref: "gameCoop", placeholder: "Enter co-op", onChange: this.onCoopChange, value: this.state.coop })
-								)
-							),
-							React.createElement(
-								Row,
-								null,
-								React.createElement(
-									Col,
-									{ xs: 6, xsPush: 3 },
-									React.createElement(Input, { type: "text", ref: "gameLink", placeholder: "Enter link", onChange: this.onLinkChange, value: this.state.link })
-								)
-							)
-						),
-						React.createElement(
-							Button,
-							{ className: "pull-right btn-link", type: "submit" },
-							"Save"
-						)
-					)
-				)
-			);
-		},
+	    return React.createElement(
+	      "section",
+	      { style: formStyles, className: "content" },
+	      React.createElement(
+	        Grid,
+	        null,
+	        React.createElement(
+	          "form",
+	          { onSubmit: this.submit },
+	          React.createElement(
+	            Input,
+	            { label: "New Game", wrapperClassName: "wrapper" },
+	            React.createElement(
+	              Row,
+	              null,
+	              React.createElement(
+	                Col,
+	                { xs: 3 },
+	                React.createElement(Input, { type: "text", ref: "gameName", placeholder: "Enter game", onChange: this.onNameChange, value: this.state.name })
+	              ),
+	              React.createElement(
+	                Col,
+	                { xs: 3 },
+	                React.createElement(Input, { type: "text", ref: "gamePLayers", placeholder: "Enter no. players", onChange: this.onPlayersChange, value: this.state.players })
+	              ),
+	              React.createElement(
+	                Col,
+	                { xs: 3 },
+	                React.createElement(Input, { type: "text", ref: "gameCoop", placeholder: "Enter co-op", onChange: this.onCoopChange, value: this.state.coop })
+	              ),
+	              React.createElement(
+	                Col,
+	                { xs: 3 },
+	                React.createElement(
+	                  Input,
+	                  { type: "select", ref: "gameExpansion", onChange: this.onExpansionChange, value: this.state.expansion },
+	                  React.createElement(
+	                    "option",
+	                    null,
+	                    "Type"
+	                  ),
+	                  React.createElement(
+	                    "option",
+	                    { value: "Base" },
+	                    "Base"
+	                  ),
+	                  React.createElement(
+	                    "option",
+	                    { value: "Expansion" },
+	                    "Expansion"
+	                  )
+	                )
+	              )
+	            ),
+	            React.createElement(
+	              Row,
+	              null,
+	              React.createElement(
+	                Col,
+	                { xs: 6, xsPush: 3 },
+	                React.createElement(Input, { type: "text", ref: "gameLink", placeholder: "Enter link", onChange: this.onLinkChange, value: this.state.link })
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            Button,
+	            { className: "pull-right btn-link", type: "submit" },
+	            "Save"
+	          )
+	        )
+	      )
+	    );
+	  },
 
-		submit: function submit(event) {
-			event.preventDefault();
+	  submit: function submit(event) {
+	    event.preventDefault();
 
-			this.props.onSubmit(this.state);
+	    this.props.onSubmit(this.state);
 
-			this.setState({
-				coop: "",
-				link: "",
-				name: "",
-				players: ""
-			});
-		},
+	    this.setState({
+	      coop: "",
+	      link: "",
+	      name: "",
+	      players: "",
+	      expansion: ""
+	    });
+	  },
 
-		onNameChange: function onNameChange(event) {
-			this.setState({ name: event.target.value });
-		},
+	  onNameChange: function onNameChange(event) {
+	    this.setState({ name: event.target.value });
+	  },
 
-		onPlayersChange: function onPlayersChange(event) {
-			this.setState({ players: event.target.value });
-		},
+	  onPlayersChange: function onPlayersChange(event) {
+	    this.setState({ players: event.target.value });
+	  },
 
-		onCoopChange: function onCoopChange(event) {
-			this.setState({ coop: event.target.value });
-		},
+	  onCoopChange: function onCoopChange(event) {
+	    this.setState({ coop: event.target.value });
+	  },
 
-		onLinkChange: function onLinkChange(event) {
-			this.setState({ link: event.target.value });
-		}
+	  onExpansionChange: function onExpansionChange(event) {
+	    this.setState({ expansion: event.target.value });
+	  },
+
+	  onLinkChange: function onLinkChange(event) {
+	    this.setState({ link: event.target.value });
+	  }
 	});
 
 /***/ },
@@ -648,6 +678,11 @@
 	        "td",
 	        null,
 	        this.props.game.coop
+	      ),
+	      React.createElement(
+	        "td",
+	        null,
+	        this.props.game.expansion
 	      )
 	    );
 	  },
@@ -684,7 +719,8 @@
 	      coop: this.props.game.coop,
 	      link: this.props.game.link,
 	      name: this.props.game.name,
-	      players: this.props.game.players
+	      players: this.props.game.players,
+	      expansion: this.props.game.expansion
 	    };
 	  },
 
@@ -705,8 +741,30 @@
 	      React.createElement(
 	        "td",
 	        null,
-	        React.createElement(Input, { type: "text", ref: "gameCoop", value: this.state.coop, onChange: this.onCoopChange }),
-	        " ",
+	        React.createElement(Input, { type: "text", ref: "gameCoop", value: this.state.coop, onChange: this.onCoopChange })
+	      ),
+	      React.createElement(
+	        "td",
+	        null,
+	        React.createElement(
+	          Input,
+	          { type: "select", ref: "gameExpansion", value: this.state.expansion, onChange: this.onExpansionChange },
+	          React.createElement(
+	            "option",
+	            null,
+	            "Type"
+	          ),
+	          React.createElement(
+	            "option",
+	            { value: "Base" },
+	            "Base"
+	          ),
+	          React.createElement(
+	            "option",
+	            { value: "Expansion" },
+	            "Expansion"
+	          )
+	        ),
 	        React.createElement(
 	          "span",
 	          { className: "pull-right" },
@@ -730,6 +788,10 @@
 
 	  onCoopChange: function onCoopChange(event) {
 	    this.setState({ coop: event.target.value });
+	  },
+
+	  onExpansionChange: function onExpansionChange(event) {
+	    this.setState({ expansion: event.target.value });
 	  },
 
 	  onLinkChange: function onLinkChange(event) {

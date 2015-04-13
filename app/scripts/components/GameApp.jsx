@@ -117,11 +117,12 @@ var GameApp = React.createClass({
 
   submit(game) {
     this.state.ref.push({
-      id:      Date.now(),
-      name:    game.name,
-      coop:    game.coop,
-      link:    game.link,
-      players: game.players
+      id:        Date.now(),
+      name:      game.name,
+      coop:      game.coop,
+      link:      game.link,
+      players:   game.players,
+      expansion: game.expansion
     });
   },
 
