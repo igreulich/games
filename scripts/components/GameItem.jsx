@@ -26,6 +26,6 @@ module.exports = React.createClass({
   destroy(event) {
     event.preventDefault();
 
-    this.props.onDeestroy();
+    this.props.onDestroy();
 	}
 });
