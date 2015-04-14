@@ -373,14 +373,23 @@
 
 	var GameItem = __webpack_require__(5);
 	var EditItem = __webpack_require__(6);
+	var SelectedModal = __webpack_require__(7);
 
 	var _require = __webpack_require__(4);
 
 	var Grid = _require.Grid;
 	var Row = _require.Row;
+	var Button = _require.Button;
+	var ModalTrigger = _require.ModalTrigger;
 
 	module.exports = React.createClass({
 	  displayName: "GameList",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      selectedGame: ""
+	    };
+	  },
 
 	  render: function render() {
 	    var _this = this;
@@ -418,6 +427,21 @@
 	            this.props.games.length
 	          ),
 	          React.createElement("div", { className: "clearfix" })
+	        ),
+	        React.createElement(
+	          Row,
+	          null,
+	          React.createElement(
+	            ModalTrigger,
+	            { modal: React.createElement(SelectedModal, { game: this.state.selectedGame }) },
+	            React.createElement(
+	              Button,
+	              { className: "pull-right btn-default", type: "button", onClick: function () {
+	                  return _this.choose();
+	                } },
+	              "Choose a game"
+	            )
+	          )
 	        ),
 	        React.createElement(
 	          Row,
@@ -476,6 +500,18 @@
 	        )
 	      )
 	    );
+	  },
+
+	  choose: function choose() {
+	    var games = this.props.games.filter(function (element) {
+	      return element.expansion === "Base";
+	    });
+
+	    var key = Math.floor(Math.random() * games.length);
+
+	    this.setState({
+	      selectedGame: games[key]
+	    });
 	  }
 	});
 
@@ -802,6 +838,55 @@
 	    event.preventDefault();
 
 	    this.props.onUpdate(this.state);
+	  }
+	});
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _require = __webpack_require__(4);
+
+	var Modal = _require.Modal;
+	var Button = _require.Button;
+
+	module.exports = React.createClass({
+	  displayName: "SelectedGameModal",
+
+	  render: function render() {
+	    return React.createElement(
+	      Modal,
+	      _extends({}, this.props, { title: "Play This One" }),
+	      React.createElement(
+	        "div",
+	        { className: "modal-body" },
+	        React.createElement(
+	          "h4",
+	          null,
+	          this.props.game.name
+	        ),
+	        React.createElement(
+	          "p",
+	          null,
+	          "A game for ",
+	          this.props.game.players,
+	          " players."
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "modal-footer" },
+	        React.createElement(
+	          Button,
+	          { onClick: this.props.onRequestHide },
+	          "Close"
+	        )
+	      )
+	    );
 	  }
 	});
 
