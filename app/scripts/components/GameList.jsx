@@ -1,14 +1,23 @@
 'use strict'
 
-var GameItem = require('./GameItem');
-var EditItem = require('./EditItemForm');
-const{
+var GameItem      = require('./GameItem');
+var EditItem      = require('./EditItemForm');
+var SelectedModal = require('./Modal');
+const {
   Grid,
-  Row
+  Row,
+  Button,
+  ModalTrigger
 } = require('react-bootstrap');
 
 module.exports = React.createClass({
   displayName: 'GameList',
+
+  getInitialState() {
+    return {
+      selectedGame: ''
+    };
+  },
 
   render() {
     var gameAction = game => {
@@ -27,6 +36,11 @@ module.exports = React.createClass({
             <h4 className="pull-right">Total: {this.props.games.length}</h4>
             <div className="clearfix"></div>
           </div>
+          <Row>
+            <ModalTrigger modal={<SelectedModal game={this.state.selectedGame} />}>
+              <Button className="pull-right btn-default" type="button" onClick={() => this.choose()}>Choose a game</Button>
+            </ModalTrigger>
+          </Row>
           <Row className="table-wrapper">
             <table className="table table-striped">
               <thead>
@@ -45,5 +59,17 @@ module.exports = React.createClass({
         </Grid>
       </section>
     );
-	}
+	},
+
+  choose() {
+    var games = this.props.games.filter(element => {
+      return element.expansion === 'Base';
+    });
+
+    var key = Math.floor(Math.random() * games.length);
+
+    this.setState({
+      selectedGame: games[key]
+    });
+  }
 });
