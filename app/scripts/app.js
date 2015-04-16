@@ -477,12 +477,12 @@
 	                React.createElement(
 	                  "th",
 	                  { className: "table-position" },
-	                  "No. Players"
+	                  "Players"
 	                ),
 	                React.createElement(
 	                  "th",
 	                  { className: "table-points" },
-	                  "Cooperative"
+	                  "Co-op"
 	                ),
 	                React.createElement(
 	                  "th",

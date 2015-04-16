@@ -46,8 +46,8 @@ module.exports = React.createClass({
               <thead>
                 <tr>
                   <th className="table-name">Game <span className="pull-right"><a href="#" onClick={this.props.onAsecSort}><span className="glyphicon glyphicon-chevron-up"></span></a><a href="#" onClick={this.props.onDescSort}><span className="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a></span></th>
-                  <th className="table-position">No. Players</th>
-                  <th className="table-points">Cooperative</th>
+                  <th className="table-position">Players</th>
+                  <th className="table-points">Co-op</th>
                   <th className="table-points">Type</th>
                 </tr>
               </thead>
